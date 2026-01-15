@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Analyseur de Commandes IA</title>
+    <title>🤖 Analyseur de Commandes IA</title>
     <style>
         * {
             margin: 0;
@@ -25,40 +25,40 @@
             background: white;
             border-radius: 20px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            padding: 40px;
-            max-width: 800px;
+            max-width: 600px;
             width: 100%;
+            padding: 40px;
         }
 
-        h1 {
-            color: #333;
+        .header {
             text-align: center;
-            margin-bottom: 10px;
-            font-size: 2.5em;
-        }
-
-        .subtitle {
-            text-align: center;
-            color: #666;
             margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2em;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
             font-size: 1.1em;
         }
 
         .upload-area {
             border: 3px dashed #667eea;
             border-radius: 15px;
-            padding: 50px;
+            padding: 40px;
             text-align: center;
-            cursor: pointer;
+            margin-bottom: 20px;
             transition: all 0.3s ease;
-            background: #f8f9ff;
-            margin-bottom: 30px;
+            cursor: pointer;
         }
 
         .upload-area:hover {
             border-color: #764ba2;
-            background: #f0f2ff;
-            transform: translateY(-2px);
+            background: #f8f9ff;
         }
 
         .upload-area.dragover {
@@ -66,60 +66,61 @@
             border-color: #764ba2;
         }
 
-        .upload-icon {
+        .file-icon {
             font-size: 4em;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         .upload-text {
-            font-size: 1.2em;
-            color: #555;
+            font-size: 1.1em;
+            color: #333;
             margin-bottom: 10px;
         }
 
-        .upload-hint {
-            color: #999;
+        .upload-subtext {
             font-size: 0.9em;
+            color: #999;
         }
 
         input[type="file"] {
             display: none;
         }
 
-        .file-info {
-            background: #e8f5e9;
+        .file-name {
+            margin: 15px 0;
             padding: 15px;
+            background: #e8f5e9;
             border-radius: 10px;
-            margin-bottom: 20px;
+            color: #2e7d32;
+            font-weight: 500;
             display: none;
         }
 
-        .file-info.show {
+        .file-name.show {
             display: block;
         }
 
-        .file-name {
-            color: #2e7d32;
-            font-weight: bold;
-        }
-
         .analyze-btn {
+            width: 100%;
+            padding: 15px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
-            padding: 15px 40px;
-            font-size: 1.1em;
             border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
             cursor: pointer;
-            width: 100%;
             transition: all 0.3s ease;
-            font-weight: bold;
-            margin-bottom: 20px;
+            display: none;
+        }
+
+        .analyze-btn.show {
+            display: block;
         }
 
         .analyze-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
         }
 
         .analyze-btn:disabled {
@@ -128,13 +129,13 @@
             transform: none;
         }
 
-        .loading {
+        .loader {
             display: none;
-            text-align: center;
             margin: 20px 0;
+            text-align: center;
         }
 
-        .loading.show {
+        .loader.show {
             display: block;
         }
 
@@ -142,10 +143,10 @@
             border: 4px solid #f3f3f3;
             border-top: 4px solid #667eea;
             border-radius: 50%;
-            width: 50px;
-            height: 50px;
+            width: 40px;
+            height: 40px;
             animation: spin 1s linear infinite;
-            margin: 0 auto 15px;
+            margin: 0 auto 10px;
         }
 
         @keyframes spin {
@@ -153,150 +154,97 @@
             100% { transform: rotate(360deg); }
         }
 
-        .results {
+        .error {
+            background: #ffebee;
+            color: #c62828;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
             display: none;
+        }
+
+        .error.show {
+            display: block;
+        }
+
+        .results {
             margin-top: 30px;
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 10px;
+            display: none;
         }
 
         .results.show {
             display: block;
         }
 
-        .result-section {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-        }
-
-        .result-title {
-            color: #667eea;
-            font-size: 1.3em;
+        .results h2 {
+            color: #333;
             margin-bottom: 15px;
-            font-weight: bold;
         }
 
-        .risk-badge {
-            display: inline-block;
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-weight: bold;
-            margin: 5px;
-        }
-
-        .risk-high {
-            background: #ffebee;
-            color: #c62828;
-        }
-
-        .risk-medium {
-            background: #fff3e0;
-            color: #ef6c00;
-        }
-
-        .risk-low {
-            background: #e8f5e9;
-            color: #2e7d32;
-        }
-
-        .order-item {
-            background: white;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            border-left: 4px solid #667eea;
-        }
-
-        .download-btn {
-            background: #4caf50;
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            font-size: 1em;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 20px;
-        }
-
-        .download-btn:hover {
-            background: #45a049;
-            transform: translateY(-2px);
-        }
-
-        .error-message {
-            background: #ffebee;
-            color: #c62828;
-            padding: 15px;
-            border-radius: 10px;
-            margin-top: 20px;
-            display: none;
-        }
-
-        .error-message.show {
-            display: block;
+        .results pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            color: #555;
+            line-height: 1.6;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🤖 Analyseur de Commandes IA</h1>
-        <p class="subtitle">Téléchargez votre fichier CSV pour une analyse intelligente</p>
+        <div class="header">
+            <h1>🤖 Analyseur de Commandes IA</h1>
+            <p>Téléchargez votre fichier CSV pour une analyse intelligente</p>
+        </div>
 
         <div class="upload-area" id="uploadArea">
-            <div class="upload-icon">📊</div>
+            <div class="file-icon">📊</div>
             <div class="upload-text">Glissez-déposez votre fichier CSV ici</div>
-            <div class="upload-hint">ou cliquez pour sélectionner un fichier</div>
-            <input type="file" id="fileInput" accept=".csv">
+            <div class="upload-subtext">ou cliquez pour sélectionner un fichier</div>
+            <input type="file" id="csvFile" accept=".csv">
         </div>
 
-        <div class="file-info" id="fileInfo">
-            ✅ Fichier sélectionné : <span class="file-name" id="fileName"></span>
+        <div class="file-name" id="fileName">
+            ✅ Fichier sélectionné : <span id="fileNameText"></span>
         </div>
 
-        <button class="analyze-btn" id="analyzeBtn" disabled>
+        <button class="analyze-btn" id="analyzeBtn">
             🔍 Analyser les commandes
         </button>
 
-        <div class="loading" id="loading">
+        <div class="loader" id="loader">
             <div class="spinner"></div>
-            <p>Analyse en cours... L'IA traite vos données</p>
+            <p>Analyse en cours... Veuillez patienter</p>
         </div>
 
-        <div class="error-message" id="errorMessage"></div>
+        <div class="error" id="error"></div>
 
         <div class="results" id="results">
-            <div class="result-section">
-                <div class="result-title">📊 Résultats de l'analyse</div>
-                <div id="analysisResults"></div>
-            </div>
-
-            <button class="download-btn" id="downloadBtn">
-                ⬇️ Télécharger le rapport CSV
-            </button>
+            <h2>📊 Résultats de l'analyse</h2>
+            <pre id="resultText"></pre>
         </div>
     </div>
 
     <script>
-        // ⚠️ IMPORTANT : Remplacez cette URL par votre URL de webhook n8n
-        const WEBHOOK_URL = 'https://calmakasi.app.n8n.cloud/webhook/analyze-orders';
+        // 🔴 REMPLACE CETTE URL PAR TON URL WEBHOOK N8N EN PRODUCTION
+        const WEBHOOK_URL = 'https://ton-instance-n8n.app.n8n.cloud/webhook/analyse-commandes';
 
         const uploadArea = document.getElementById('uploadArea');
-        const fileInput = document.getElementById('fileInput');
-        const fileInfo = document.getElementById('fileInfo');
+        const csvFile = document.getElementById('csvFile');
         const fileName = document.getElementById('fileName');
+        const fileNameText = document.getElementById('fileNameText');
         const analyzeBtn = document.getElementById('analyzeBtn');
-        const loading = document.getElementById('loading');
+        const loader = document.getElementById('loader');
+        const error = document.getElementById('error');
         const results = document.getElementById('results');
-        const analysisResults = document.getElementById('analysisResults');
-        const downloadBtn = document.getElementById('downloadBtn');
-        const errorMessage = document.getElementById('errorMessage');
+        const resultText = document.getElementById('resultText');
 
-        let selectedFile = null;
-        let analysisData = null;
-
-        // Gestion du clic sur la zone de téléchargement
-        uploadArea.addEventListener('click', () => fileInput.click());
+        // Gestion du clic sur la zone d'upload
+        uploadArea.addEventListener('click', () => {
+            csvFile.click();
+        });
 
         // Gestion du drag & drop
         uploadArea.addEventListener('dragover', (e) => {
@@ -311,126 +259,89 @@
         uploadArea.addEventListener('drop', (e) => {
             e.preventDefault();
             uploadArea.classList.remove('dragover');
+            
             const files = e.dataTransfer.files;
             if (files.length > 0) {
-                handleFile(files[0]);
+                handleFileSelect(files[0]);
             }
         });
 
         // Gestion de la sélection de fichier
-        fileInput.addEventListener('change', (e) => {
+        csvFile.addEventListener('change', (e) => {
             if (e.target.files.length > 0) {
-                handleFile(e.target.files[0]);
+                handleFileSelect(e.target.files[0]);
             }
         });
 
-        function handleFile(file) {
-            if (file.type !== 'text/csv' && !file.name.endsWith('.csv')) {
+        function handleFileSelect(file) {
+            if (!file.name.endsWith('.csv')) {
                 showError('Veuillez sélectionner un fichier CSV valide');
                 return;
             }
 
-            selectedFile = file;
-            fileName.textContent = file.name;
-            fileInfo.classList.add('show');
-            analyzeBtn.disabled = false;
+            fileNameText.textContent = file.name;
+            fileName.classList.add('show');
+            analyzeBtn.classList.add('show');
+            hideError();
             results.classList.remove('show');
-            errorMessage.classList.remove('show');
         }
 
-        // Analyse des commandes
+        // Analyse du fichier
         analyzeBtn.addEventListener('click', async () => {
-            if (!selectedFile) return;
+            const file = csvFile.files[0];
+            
+            if (!file) {
+                showError('Veuillez sélectionner un fichier CSV');
+                return;
+            }
 
-            loading.classList.add('show');
+            // Préparer les données
+            const formData = new FormData();
+            formData.append('file', file);
+
+            // Afficher le loader
+            loader.classList.add('show');
             analyzeBtn.disabled = true;
-            errorMessage.classList.remove('show');
+            hideError();
             results.classList.remove('show');
 
             try {
-                const formData = new FormData();
-                formData.append('file', selectedFile);
-
                 const response = await fetch(WEBHOOK_URL, {
                     method: 'POST',
                     body: formData
                 });
 
                 if (!response.ok) {
-                    throw new Error('Erreur lors de l\'analyse');
+                    throw new Error(`Erreur HTTP: ${response.status}`);
                 }
 
-                analysisData = await response.json();
-                displayResults(analysisData);
-                results.classList.add('show');
+                const result = await response.json();
 
-            } catch (error) {
-                showError('Erreur : ' + error.message + '. Vérifiez que votre URL webhook n8n est correcte.');
+                // Afficher les résultats
+                if (result.analyse) {
+                    resultText.textContent = result.analyse;
+                    results.classList.add('show');
+                } else {
+                    showError('Aucune analyse reçue du serveur');
+                }
+
+            } catch (err) {
+                console.error('Erreur:', err);
+                showError('Erreur lors de l\'analyse. Vérifiez que votre URL webhook n8n est correcte.');
             } finally {
-                loading.classList.remove('show');
+                loader.classList.remove('show');
                 analyzeBtn.disabled = false;
             }
         });
 
-        function displayResults(data) {
-            let html = '';
-
-            if (data.high_risk && data.high_risk.length > 0) {
-                html += '<div class="order-item">';
-                html += '<strong>⚠️ Commandes à Risque Élevé :</strong><br>';
-                data.high_risk.forEach(order => {
-                    html += `<span class="risk-badge risk-high">${order}</span>`;
-                });
-                html += '</div>';
-            }
-
-            if (data.medium_risk && data.medium_risk.length > 0) {
-                html += '<div class="order-item">';
-                html += '<strong>⚡ Commandes à Risque Moyen :</strong><br>';
-                data.medium_risk.forEach(order => {
-                    html += `<span class="risk-badge risk-medium">${order}</span>`;
-                });
-                html += '</div>';
-            }
-
-            if (data.low_risk && data.low_risk.length > 0) {
-                html += '<div class="order-item">';
-                html += '<strong>✅ Commandes à Risque Faible :</strong><br>';
-                data.low_risk.forEach(order => {
-                    html += `<span class="risk-badge risk-low">${order}</span>`;
-                });
-                html += '</div>';
-            }
-
-            analysisResults.innerHTML = html;
+        function showError(message) {
+            error.textContent = message;
+            error.classList.add('show');
         }
 
-        // Téléchargement du rapport
-        downloadBtn.addEventListener('click', () => {
-            if (!analysisData || !analysisData.csv_data) {
-                showError('Aucune donnée à télécharger');
-                return;
-            }
-
-            const blob = new Blob([analysisData.csv_data], { type: 'text/csv' });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'analyse_commandes_' + new Date().toISOString().slice(0,10) + '.csv';
-            document.body.appendChild(a);
-            a.click();
-            window.URL.revokeObjectURL(url);
-            document.body.removeChild(a);
-        });
-
-        function showError(message) {
-            errorMessage.textContent = message;
-            errorMessage.classList.add('show');
+        function hideError() {
+            error.classList.remove('show');
         }
     </script>
 </body>
-
 </html>
-
-
-
